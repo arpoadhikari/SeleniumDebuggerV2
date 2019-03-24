@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -75,9 +76,11 @@ public class BrowserFactory {
 		String chromedriverPath ;
 		String iedriverPath;
 		String geckodriverPath;
+		String edgedriverPath;
 		DesiredCapabilities capabilities;
 
 		chromedriverPath = "binaries/chromedriver.exe";
+		edgedriverPath = "binaries/MicrosoftWebDriver.exe";
 
 		if (sysArch.endsWith("64")) {
 			geckodriverPath = "binaries/x64/geckodriver.exe";
@@ -126,6 +129,17 @@ public class BrowserFactory {
 				System.setProperty("webdriver.ie.driver", iedriverPath);
 				if (serverURL.equalsIgnoreCase("")) {
 					driver = new InternetExplorerDriver(capabilities);
+				}
+				else {
+					driver = new RemoteWebDriver(new URL(serverURL), capabilities);
+				}
+				break;
+			case "Edge":
+				capabilities = DesiredCapabilities.edge();
+				capabilities = setCapFromUI(capabilities, capsToBeSet);
+				System.setProperty("webdriver.edge.driver", edgedriverPath);
+				if (serverURL.equalsIgnoreCase("")) {
+					driver = new EdgeDriver(capabilities);
 				}
 				else {
 					driver = new RemoteWebDriver(new URL(serverURL), capabilities);
@@ -228,4 +242,5 @@ public class BrowserFactory {
 		FileUtils.copyInputStreamToFile(inputStream, targetFile);
 		return targetFile;
 	}
+	
 }

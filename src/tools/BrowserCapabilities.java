@@ -25,5 +25,11 @@ public class BrowserCapabilities {
 		put("enablePersistentHover", "true");
 		put("elementScrollBehavior", "0");
 	}};
+	@SuppressWarnings("serial")
+	public static HashMap<String, String> edge = new HashMap<String, String>()
+	{{
+		put("elementScrollBehavior", "0");
+		put("pageLoadStrategy", "eager");
+	}};
 
 }

@@ -1,30 +1,39 @@
 package appWindow;
 
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JButton;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-
 import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
-import tools.BrowserCapabilities;
-import tools.BrowserFactory;
-import tools.CheckForLock;
-import tools.ServerStatus;
-
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.ToolTipManager;
 import javax.swing.UIManager;
@@ -36,26 +45,10 @@ import javax.swing.table.DefaultTableModel;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.remote.server.SeleniumServer;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.JPopupMenu;
-import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import javax.swing.JMenuItem;
-import javax.swing.JCheckBox;
-import java.awt.Cursor;
-import javax.swing.JMenu;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
-
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
+import tools.BrowserCapabilities;
+import tools.BrowserFactory;
+import tools.CheckForLock;
+import tools.ServerStatus;
 
 public class SessionGenerator {
 
@@ -97,6 +90,7 @@ public class SessionGenerator {
 	private final String lookNfeel_Nimbus = "javax.swing.plaf.nimbus.NimbusLookAndFeel";
 	private final String lookNfeel_Metal = "javax.swing.plaf.metal.MetalLookAndFeel";
 	private final String lookNfeel_Motif = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+	private JButton btnLaunchInspector;
 
 	/**
 	 * Launch the application.
@@ -246,7 +240,7 @@ public class SessionGenerator {
 		//<-----
 
 		//Combo Box for Browser Type ->
-		String[] browsers = {"Firefox", "Chrome", "Internet Explorer"};
+		String[] browsers = {"Firefox", "Chrome", "Internet Explorer", "Edge"};
 		comboBox = new JComboBox(browsers);
 		comboBox.setToolTipText("<html>\r\n\t<p>\r\n\t\t<font size=\"4\" face=\"Segoe UI\">\r\n\t\t\tSelect a Browser from the Dropdown.\r\n\t\t</font>\r\n\t</p>\r\n</html>");
 		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -480,15 +474,17 @@ public class SessionGenerator {
 					public void run() {
 						btnStart.setEnabled(false);
 						btnStop.setEnabled(false);
+						btnLaunchInspector.setEnabled(false);
 						start();
 						btnStart.setEnabled(true);
 						btnStop.setEnabled(true);
+						btnLaunchInspector.setEnabled(true);
 					}
 				}).start();
 			}
 		});
 		btnStart.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		btnStart.setBounds(169, 570, 95, 35);
+		btnStart.setBounds(12, 572, 95, 35);
 		frmSessionGenerator.getContentPane().add(btnStart);
 		//<-----
 
@@ -502,16 +498,39 @@ public class SessionGenerator {
 					public void run() {
 						btnStart.setEnabled(false);
 						btnStop.setEnabled(false);
+						btnLaunchInspector.setEnabled(false);
 						stop();
 						btnStart.setEnabled(true);
 						btnStop.setEnabled(true);
+						btnLaunchInspector.setEnabled(true);
 					}
 				}).start();
 			}
 		});
 		btnStop.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-		btnStop.setBounds(276, 570, 95, 35);
+		btnStop.setBounds(437, 572, 95, 35);
 		frmSessionGenerator.getContentPane().add(btnStop);
+		//<-----
+		
+		//UI Inspector Button ->
+		btnLaunchInspector = new JButton("UI Inspector");
+		btnLaunchInspector.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (factory.getDriver() != null) {
+					Inspector inspector = new Inspector(factory.getLocalServerURL(), factory.getSessionId());
+					inspector.setVisible(true);
+				}
+				else {
+					Inspector inspector = new Inspector(null, "");
+					inspector.setVisible(true);
+				}
+			}
+		});
+		btnLaunchInspector.setIcon(new ImageIcon(SessionGenerator.class.getResource("/icons/inspector.png")));
+		btnLaunchInspector.setToolTipText("<html>\r\n\t<p>\r\n\t\t<font size=\"4\" face=\"Segoe UI\">\r\n\t\t\tLaunches the UI Inspector\r\n\t\t</font>\r\n\t</p>\r\n</html>");
+		btnLaunchInspector.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		btnLaunchInspector.setBounds(194, 572, 155, 35);
+		frmSessionGenerator.getContentPane().add(btnLaunchInspector);
 		//<-----
 	}
 	
@@ -628,6 +647,16 @@ public class SessionGenerator {
 		else if (browser.equalsIgnoreCase("Internet Explorer")) {
 			removeAllRow();
 			for (Map.Entry<String, String> kv: BrowserCapabilities.ie.entrySet()) {
+				String capability = kv.getKey();
+				String value = kv.getValue();
+				if (capability != null && capability != "" && value != null && value != "") {
+					addRow(capability, value, true);
+				}
+			}
+		}
+		else if (browser.equalsIgnoreCase("Edge")) {
+			removeAllRow();
+			for (Map.Entry<String, String> kv: BrowserCapabilities.edge.entrySet()) {
 				String capability = kv.getKey();
 				String value = kv.getValue();
 				if (capability != null && capability != "" && value != null && value != "") {
