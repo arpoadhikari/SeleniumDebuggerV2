@@ -50,6 +50,11 @@ import tools.BrowserFactory;
 import tools.CheckForLock;
 import tools.ServerStatus;
 
+/**
+ *  This class works is used to display the main UI
+ * @author Arpo Adhikari
+ *
+ */
 public class SessionGenerator {
 
 	private JFrame frmSessionGenerator;

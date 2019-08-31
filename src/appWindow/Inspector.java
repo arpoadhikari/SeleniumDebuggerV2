@@ -1,7 +1,5 @@
 package appWindow;
 
-
-
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -38,6 +36,11 @@ import org.openqa.selenium.WebElement;
 
 import tools.customDriver.AttachedWebDriver2;
 
+/**
+ *  This class works is used to display the object spy
+ * @author Arpo Adhikari
+ *
+ */
 public class Inspector extends JDialog {
 
 	/**
@@ -289,7 +292,7 @@ public class Inspector extends JDialog {
 		 btnValidate.setEnabled(false);
 
 		 btnInspect = new JButton("Inspect");
-		 btnInspect.setToolTipText("<html>\r\n\t<p>\r\n\t\t<font size=\"4\" face=\"Segoe UI\">\r\n\t\t\tMouseover to any object in web page to inspect &\r\n\t\t\t<br/>\r\n\t\t\tCtrl+C to capture the Xpath\r\n\t\t</font>\r\n\t</p>\r\n</html>");
+		 btnInspect.setToolTipText("<html>\r\n\t<p>\r\n\t\t<font size=\"4\" face=\"Segoe UI\">\r\n\t\t\tMouseover to any object in web page to inspect &\r\n\t\t\t<br/>\r\n\t\t\tCtrl+Alt+C to capture the Xpath\r\n\t\t</font>\r\n\t</p>\r\n</html>");
 		 btnInspect.setIcon(new ImageIcon(Inspector.class.getResource("/icons/inspector.png")));
 		 btnInspect.setMargin(new Insets(2, 10, 2, 10));
 		 btnInspect.addActionListener(new ActionListener() {

@@ -2,6 +2,11 @@ package tools;
 
 import java.util.HashMap;
 
+/**
+ *  This class works with browser capabilities
+ * @author Arpo Adhikari
+ *
+ */
 public class BrowserCapabilities {
 
 	@SuppressWarnings("serial")

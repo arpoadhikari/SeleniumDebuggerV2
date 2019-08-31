@@ -47,7 +47,7 @@ function getElementInfo(event) {
         return;
     }
  
-    if (event.ctrlKey) {
+    if (event.ctrlKey && event.altKey) {
         if (keyName === 'C' || keyName === 'c') {
             resetTargetValue(target);
             prompt('Element XPath: ',path);
